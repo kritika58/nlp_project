@@ -16,29 +16,31 @@ negative=n.split('\n')
 #print(negative) 
 file.close()
 
-f = open('output2.txt','a')
+f = open('output5_toi.txt','a')
 
 p_score=0
 n_score=0
-cnn_paper = newspaper.build('https://www.bbc.com')
-for article in cnn_paper.articles:
-    for i in range(5):        
-            url=article.url
-            print(url)
-            article.download()
-            article.parse()
-            a_txt=article.text
-            a_txt_arr=a_txt.split(' ')
-            for word in a_txt_arr:
-                if word in positive:
-                    p_score=p_score+1
-                elif word in negative:
-                    n_score=n_score+1
-            p_per=(p_score/(p_score+n_score))*100
-            n_per=(n_score/(p_score+n_score))*100
-            f.write('\n' + a_txt)
-            f.write('\nPostive Score'+p_per)
-            f.write('\nNegative Score'+n_per+'\n\n')
+ny_paper = newspaper.build('https://www.nytimes.com')
+for article in ny_paper.articles:      
+    url=article.url
+    print(url)
+    article.download()
+    article.parse()
+    a_txt=article.text
+    a_txt_arr=a_txt.split(' ')
+    for word in a_txt_arr:
+        if word in positive:
+            p_score=p_score+1
+        elif word in negative:
+            n_score=n_score+1
+    p_per=((p_score+1)/(p_score+1+n_score+1))*100
+    n_per=((n_score+1)/(p_score+1+n_score+1))*100
+    f.write('\n' + a_txt)
+    str_p_per=str(p_per)
+    str_n_per=str(n_per)
+    f.write('\nPostive Score'+str_p_per)
+    f.write('\nNegative Score'+str_n_per+'\n\n')
+    #print("pos: ",p_per,"\tneg:",n_per);
 f.close()
         
 

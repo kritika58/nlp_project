@@ -5,9 +5,12 @@ Created on Fri Sep 14 22:02:36 2018
 @author: Kritika Mishra
 """
 
+import newspaper
 import nltk
 from nltk.tokenize import word_tokenize
-  
+ny_paper = newspaper.build('https://www.aljazeera.com')
+hotel_rev=["Hello"]
+i=1
 # Step 1 – Training data
 train = [("Great place to be when you are in Bangalore.", "pos"),
   ("The place was being renovated when I visited so the seating was limited.", "neg"),
@@ -26,14 +29,18 @@ t = [({word: (word in word_tokenize(x[0])) for word in dictionary}, x[1]) for x 
   
 # Step 4 – the classifier is trained with sample data
 classifier = nltk.NaiveBayesClassifier.train(t)
-  
-test_data = """MEXICO CITY — The morgue had a problem: It had run out of space for fresh corpses. Violence was soaring and new bodies were arriving every day, yet there was no place to store them.
 
-Authorities in the western Mexican state of Jalisco hit on a short-term solution: They rented a refrigerated truck and parked it at the morgue, the Jalisco Institute of Forensic Sciences, near the state capital, Guadalajara. That was two years ago.
-
-The stopgap measure seemed to be working fine — until the truck, with some 170 corpses on board, was driven off the lot on Sept. 7 and began a strange journey around the Guadalajara area, trailed by resident complaints of putrid smells and human rights denunciations of the inhumane treatment of the cadavers.
-
-“Such events represent a lack of respect for the dignity of the deceased and violate their fundamental rights and those of their family members,” the National Human Rights Commission said Tuesday in a statement."""
-test_data_features = {word.lower(): (word in word_tokenize(test_data.lower())) for word in dictionary}
-  
-print (classifier.classify(test_data_features))
+for article in ny_paper.articles:      
+    url=article.url
+    print(url)
+    article.download()
+    article.parse()
+    a_txt=article.text
+    hotel_rev.append(str(a_txt))
+    i=i+1
+    if(i==10):
+        break
+print(hotel_rev)
+for test_data in hotel_rev:
+    test_data_features = {word.lower(): (word in word_tokenize(test_data.lower())) for word in dictionary}
+    print (classifier.classify(test_data_features))
